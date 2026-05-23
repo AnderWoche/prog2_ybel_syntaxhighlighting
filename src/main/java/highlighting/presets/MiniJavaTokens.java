@@ -1,28 +1,56 @@
 package highlighting.presets;
 
+import highlighting.color.ColorType;
 import highlighting.regex.Token;
 import java.util.List;
 import java.util.regex.Pattern;
 
 public final class MiniJavaTokens {
 
-  // TODO (Phase I+II: RegexHighlighter/ScanningHighlighter)
-  // TODO: Define the MiniJava tokens used by the highlighters. Each token is a mapping from a
-  // regular expression to a colour (and, if applicable, a specific matching group). The order of
-  // tokens in this list determines their relative priority during highlighting. One example token
-  // definition is provided below; define the remaining tokens in an analogous way.
-
-  // Basic token set for MiniJava. Extend this list with further tokens as needed (e.g. identifiers,
-  // numeric literals, operators, brackets, whitespace), following the same pattern. Each token is
-  // defined by a regular expression and a colour. Optionally, a specific capturing group within the
-  // pattern can be selected as the "highlighted" region.
-  public static List<Token> defaultTokens() {
-    return List.of(
-        // Example: string literals (students should define further tokens below)
-        Token.of(Pattern.compile("\"([^\"\\\\]|\\\\.)*\""), MiniJavaColours.STRING_LITERAL_COLOUR)
-
-        // TODO: Define additional tokens for MiniJava, e.g. character literals, keywords,
-        // annotations, comments, identifiers, numbers, operators, etc.
-        );
-  }
+    public static List<Token> defaultTokens() {
+        return List.of(
+                Token.of(
+                        Pattern.compile("/\\*\\*.*?\\*/", Pattern.DOTALL),
+                        ColorType.JAVADOC_COMMENT_COLOUR),
+                Token.of(
+                        Pattern.compile("/\\*.*?\\*/", Pattern.DOTALL),
+                        ColorType.BLOCK_COMMENT_COLOUR),
+                Token.of(Pattern.compile("//[^\\n]*"), ColorType.LINE_COMMENT_COLOUR),
+                Token.of(
+                        Pattern.compile("\"([^\"\\\\]|\\\\.)*\""), ColorType.STRING_LITERAL_COLOUR),
+                Token.of(Pattern.compile("'([^'\\\\]|\\\\.)'"), ColorType.CHAR_LITERAL_COLOUR),
+                Token.of(Pattern.compile("@\\w+"), ColorType.ANNOTATION_COLOUR),
+                Token.of(
+                        Pattern.compile(
+                                "\\b(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue"
+                                    + "|default|do|double|else|enum|extends|final|finally|float|for|goto|if"
+                                    + "|implements|import|instanceof|int|interface|long|native|new|package"
+                                    + "|private|protected|public|return|short|static|strictfp|super|switch"
+                                    + "|synchronized|this|throw|throws|transient|try|void|volatile|while"
+                                    + "|true|false|null|var|record|sealed|yield)\\b"),
+                        ColorType.KEYWORD_COLOUR),
+                Token.of(Pattern.compile("\\b\\d+(\\.\\d+)?\\b"), ColorType.NUMBER_COLOUR),
+                Token.of(
+                        Pattern.compile(
+                                "\\b(?:public|private|protected)(?:\\s+(?:static|final|abstract|synchronized))*\\s+(?:void|[A-Z]\\w*)\\s+(\\w+)\\s*\\("),
+                        1, // ← Gruppe 1 = der Methodenname
+                        ColorType.METHOD_NAME_COLOUR),
+                Token.of(Pattern.compile("(?<=\\.)\\w+(?=\\s*\\()"), ColorType.METHOD_CALL_COLOUR),
+                Token.of(
+                        Pattern.compile("\\bnew\\s+([A-Z]\\w*)(?=\\s*[<(])"),
+                        1,
+                        ColorType.CONSTRUCTOR_CALL_COLOUR),
+                Token.of(
+                        Pattern.compile("\\b[A-Z][a-zA-Z0-9_]*[a-z][a-zA-Z0-9_]*\\b"),
+                        ColorType.CLASS_NAME_COLOUR),
+                Token.of(Pattern.compile("\\b[A-Z][A-Z0-9_]*\\b"), ColorType.CONSTANT_COLOUR),
+                Token.of(
+                        Pattern.compile("(?<=[(,])\\s*\\w+\\s+(\\w+)(?=\\s*[,)])"),
+                        1, // ← nur den Namen
+                        ColorType.PARAMETER_COLOUR),
+                Token.of(
+                        Pattern.compile("\\b[A-Za-z_][A-Za-z0-9_]*\\b"),
+                        ColorType.IDENTIFIER_COLOUR),
+                Token.of(Pattern.compile("[-+*/=<>!&|%^~?:]+"), ColorType.OPERATOR_COLOUR));
+    }
 }
