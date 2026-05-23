@@ -1,26 +1,27 @@
 package highlighting.regex;
 
-import highlighting.color.ColorResolver;
-import highlighting.color.MiniJavaColours;
-import highlighting.color.WhiteModeColorResolver;
-import highlighting.core.HighlightRegion;
-import org.junit.jupiter.api.Test;
-
-import java.awt.Color;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import highlighting.color.ColorResolver;
+import highlighting.color.MiniJavaColours;
+import highlighting.color.WhiteModeColorResolver;
+import highlighting.core.HighlightRegion;
+import java.awt.Color;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+
 /**
- * Tests for {@link RegexHighlighter} — the naive "apply every token, then resolve overlaps" strategy.
+ * Tests for {@link RegexHighlighter} — the naive "apply every token, then resolve overlaps"
+ * strategy.
  *
  * <p>Three layers are tested:
+ *
  * <ul>
- *   <li>{@code computeRegions} — full pipeline (collect → normalize → resolveConflicts),</li>
- *   <li>{@code collectMatches} — must return ALL matches, including overlapping ones,</li>
- *   <li>{@code resolveConflicts} — overlap logic on hand-crafted, already-sorted inputs.</li>
+ *   <li>{@code computeRegions} — full pipeline (collect → normalize → resolveConflicts),
+ *   <li>{@code collectMatches} — must return ALL matches, including overlapping ones,
+ *   <li>{@code resolveConflicts} — overlap logic on hand-crafted, already-sorted inputs.
  * </ul>
  */
 class RegexHighlighterTest {
@@ -126,8 +127,10 @@ class RegexHighlighterTest {
     void collectMatches_returnsAllOverlappingMatches() {
         // For "class" both the keyword AND identifier tokens fire. collectMatches must NOT filter.
         List<HighlightRegion> regions = highlighter.collectMatches("class");
-        assertTrue(regions.size() >= 2,
-            "expected at least 2 overlapping matches (keyword + identifier), got " + regions.size());
+        assertTrue(
+                regions.size() >= 2,
+                "expected at least 2 overlapping matches (keyword + identifier), got "
+                        + regions.size());
     }
 
     @Test
