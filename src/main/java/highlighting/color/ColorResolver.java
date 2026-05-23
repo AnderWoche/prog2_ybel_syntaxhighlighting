@@ -5,5 +5,4 @@ import java.awt.*;
 public interface ColorResolver {
 
     Color resolveColor(ColorType colorType);
-
 }

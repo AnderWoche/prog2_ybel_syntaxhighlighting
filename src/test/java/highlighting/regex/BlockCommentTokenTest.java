@@ -1,15 +1,14 @@
 package highlighting.regex;
 
-import highlighting.color.ColorType;
-import highlighting.core.HighlightRegion;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static highlighting.regex.TokenTestSupport.match;
 import static highlighting.regex.TokenTestSupport.slice;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import highlighting.color.ColorType;
+import highlighting.core.HighlightRegion;
+import java.util.List;
+import org.junit.jupiter.api.Test;
 
 /** Tests for the block-comment token: matches {@code /* ... *\/} (lazy, multi-line). */
 class BlockCommentTokenTest {
@@ -44,7 +43,8 @@ class BlockCommentTokenTest {
 
     @Test
     void lazyMatching_doesNotJoinTwoComments() {
-        // With a greedy regex this would become one giant match. Lazy `.*?` must stop at the first `*/`.
+        // With a greedy regex this would become one giant match. Lazy `.*?` must stop at the first
+        // `*/`.
         String text = "/* a */ between /* b */";
         List<HighlightRegion> regions = match(TYPE, text);
         assertEquals(2, regions.size());

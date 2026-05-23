@@ -1,15 +1,14 @@
 package highlighting.regex;
 
-import highlighting.color.ColorType;
-import highlighting.core.HighlightRegion;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static highlighting.regex.TokenTestSupport.match;
 import static highlighting.regex.TokenTestSupport.slice;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import highlighting.color.ColorType;
+import highlighting.core.HighlightRegion;
+import java.util.List;
+import org.junit.jupiter.api.Test;
 
 /** Tests for the keyword token: matches Java reserved words as whole words. */
 class KeywordTokenTest {
@@ -68,7 +67,8 @@ class KeywordTokenTest {
 
     @Test
     void noMatch_keywordAsSubstring_intArray() {
-        // `int` should NOT match inside `printArr`, `winter`, `interface` ... well, `interface` IS a keyword.
+        // `int` should NOT match inside `printArr`, `winter`, `interface` ... well, `interface` IS
+        // a keyword.
         assertTrue(match(TYPE, "printer winter sprint").isEmpty());
     }
 

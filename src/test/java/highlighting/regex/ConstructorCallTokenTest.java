@@ -1,17 +1,19 @@
 package highlighting.regex;
 
-import highlighting.color.ColorType;
-import highlighting.core.HighlightRegion;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static highlighting.regex.TokenTestSupport.match;
 import static highlighting.regex.TokenTestSupport.slice;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/** Tests for the constructor-call token: matches the class name in {@code new Foo(} / {@code new Foo<}. */
+import highlighting.color.ColorType;
+import highlighting.core.HighlightRegion;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+
+/**
+ * Tests for the constructor-call token: matches the class name in {@code new Foo(} / {@code new
+ * Foo<}.
+ */
 class ConstructorCallTokenTest {
 
     private static final ColorType TYPE = ColorType.CONSTRUCTOR_CALL_COLOUR;

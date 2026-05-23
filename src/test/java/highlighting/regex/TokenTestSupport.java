@@ -5,7 +5,6 @@ import highlighting.color.ColorType;
 import highlighting.color.WhiteModeColorResolver;
 import highlighting.core.HighlightRegion;
 import highlighting.presets.MiniJavaTokens;
-
 import java.util.List;
 
 /**
@@ -22,9 +21,9 @@ public final class TokenTestSupport {
     /** Find the production token for a given colour type. */
     public static Token tokenFor(ColorType type) {
         return MiniJavaTokens.defaultTokens().stream()
-            .filter(t -> t.colorType() == type)
-            .findFirst()
-            .orElseThrow(() -> new IllegalStateException("No token defined for " + type));
+                .filter(t -> t.colorType() == type)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No token defined for " + type));
     }
 
     /** Convenience: apply the token for {@code type} to {@code text} and return all regions. */
