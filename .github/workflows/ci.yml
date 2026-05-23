@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+# Falls ein neuer Commit auf einen offenen PR gepusht wird, alte Läufe abbrechen.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Compile main classes only
+        run: ./gradlew classes
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run JUnit tests
+        run: ./gradlew test
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: build/reports/tests/test
+          if-no-files-found: ignore
+
+  format:
+    name: Format (Spotless auto-apply)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write          # nötig, um Format-Änderungen zurück zu pushen
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Bei PRs den eigentlichen PR-Branch auschecken (statt des Merge-Commits),
+          # damit wir darauf committen können.
+          ref: ${{ github.head_ref || github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Apply Spotless formatting
+        run: ./gradlew spotlessApply
+
+      - name: Commit formatting changes (only if anything changed)
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: apply spotless formatting"
+          commit_user_name: github-actions[bot]
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
