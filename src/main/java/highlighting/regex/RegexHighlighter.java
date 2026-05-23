@@ -4,7 +4,6 @@ import highlighting.color.ColorResolver;
 import highlighting.core.HighlightRegion;
 import highlighting.core.SyntaxHighlighter;
 import highlighting.presets.MiniJavaTokens;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class RegexHighlighter extends SyntaxHighlighter {
 
         for (int i = 1; i < regions.size(); i++) {
             HighlightRegion region = regions.get(i);
-            if(region.start() < result.getLast().end()) continue;
+            if (region.start() < result.getLast().end()) continue;
             result.add(region);
         }
 
