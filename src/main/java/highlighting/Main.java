@@ -49,7 +49,7 @@ public class Main {
      *
      * @param startText der initial anzuzeigende Text
      * @param whiteMode Highlighter für den hellen Modus (Fallback)
-     * @param darkMode  Highlighter für den dunklen Modus
+     * @param darkMode Highlighter für den dunklen Modus
      */
     @SuppressWarnings("unchecked")
     public static void createEditorUi(
