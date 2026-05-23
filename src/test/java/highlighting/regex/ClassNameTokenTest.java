@@ -1,15 +1,14 @@
 package highlighting.regex;
 
-import highlighting.color.ColorType;
-import highlighting.core.HighlightRegion;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static highlighting.regex.TokenTestSupport.match;
 import static highlighting.regex.TokenTestSupport.slice;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import highlighting.color.ColorType;
+import highlighting.core.HighlightRegion;
+import java.util.List;
+import org.junit.jupiter.api.Test;
 
 /** Tests for the class-name token: CamelCase identifiers (uppercase + at least one lowercase). */
 class ClassNameTokenTest {

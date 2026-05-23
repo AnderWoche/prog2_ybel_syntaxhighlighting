@@ -3,7 +3,6 @@ package highlighting.regex;
 import highlighting.color.ColorResolver;
 import highlighting.core.HighlightRegion;
 import highlighting.core.SyntaxHighlighter;
-
 import java.util.List;
 
 public class RegexHighlighter extends SyntaxHighlighter {
