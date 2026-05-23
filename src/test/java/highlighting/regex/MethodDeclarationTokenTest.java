@@ -65,9 +65,35 @@ class MethodDeclarationTokenTest {
     }
 
     @Test
-    void noMatch_lowercaseReturnType_notVoidNotClass() {
-        // `int` is lowercase and not `void`, and not in our type alternative — won't match.
-        assertTrue(match(TYPE, "public int foo() {}").isEmpty());
+    void matches_primitiveReturnType_int() {
+        // Primitive return types are accepted alongside `void` and class names.
+        String text = "public int foo() {}";
+        List<HighlightRegion> regions = match(TYPE, text);
+        assertEquals(1, regions.size());
+        assertEquals("foo", slice(text, regions.getFirst()));
+    }
+
+    @Test
+    void matches_primitiveReturnType_boolean() {
+        String text = "private boolean isEmpty() {}";
+        List<HighlightRegion> regions = match(TYPE, text);
+        assertEquals(1, regions.size());
+        assertEquals("isEmpty", slice(text, regions.getFirst()));
+    }
+
+    @Test
+    void matches_primitiveReturnType_double() {
+        String text = "protected double getValue() {}";
+        List<HighlightRegion> regions = match(TYPE, text);
+        assertEquals(1, regions.size());
+        assertEquals("getValue", slice(text, regions.getFirst()));
+    }
+
+    @Test
+    void noMatch_unknownLowercaseReturnType() {
+        // `mytype` is not a recognised primitive (and not capitalised) — must not match,
+        // otherwise method declarations would over-match arbitrary "word word(" patterns.
+        assertTrue(match(TYPE, "public mytype foo() {}").isEmpty());
     }
 
     @Test
