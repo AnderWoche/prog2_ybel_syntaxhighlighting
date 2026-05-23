@@ -32,7 +32,7 @@ public final class MiniJavaTokens {
                 Token.of(Pattern.compile("\\b\\d+(\\.\\d+)?\\b"), ColorType.NUMBER_COLOUR),
                 Token.of(
                         Pattern.compile(
-                                "\\b(?:public|private|protected)(?:\\s+(?:static|final|abstract|synchronized))*\\s+(?:void|[A-Z]\\w*)\\s+(\\w+)\\s*\\("),
+                                "\\b(?:public|private|protected)(?:\\s+(?:static|final|abstract|synchronized))*\\s+(?:void|boolean|byte|short|int|long|float|double|char|[A-Z]\\w*)\\s+(\\w+)\\s*\\("),
                         1, // ← Gruppe 1 = der Methodenname
                         ColorType.METHOD_NAME_COLOUR),
                 Token.of(Pattern.compile("(?<=\\.)\\w+(?=\\s*\\()"), ColorType.METHOD_CALL_COLOUR),
