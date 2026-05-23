@@ -21,7 +21,6 @@ import javax.swing.text.StyledDocument;
 
 public class Main {
 
-    /*asdfasdf*/
     public static void main(String... args) {
         // Phase I: RegexHighlighter
         SwingUtilities.invokeLater(
@@ -30,7 +29,6 @@ public class Main {
                                 Texts.START_TEXT,
                                 new RegexHighlighter(new WhiteModeColorResolver()),
                                 new RegexHighlighter(new DarkModeColorResolver())));
-        int sdf = 's';
 
         // Phase II: ScanningHighlighter
         SyntaxHighlighter scanning = new ScanningHighlighter();
@@ -42,6 +40,17 @@ public class Main {
         // EditorUI.show(Texts.START_TEXT, antlrToken);
     }
 
+    /**
+     * Setzt per Reflection die Hintergrundfarbe des Editors auf Dark Mode.
+     *
+     * <p>Da die Klasse {@link EditorUI} offiziell nicht verändert werden darf, erfolgt die
+     * Anpassung auf indirektem Weg. Diese Lösung habe ich als persönliche Herausforderung
+     * umgesetzt.
+     *
+     * @param startText der initial anzuzeigende Text
+     * @param whiteMode Highlighter für den hellen Modus (Fallback)
+     * @param darkMode  Highlighter für den dunklen Modus
+     */
     @SuppressWarnings("unchecked")
     public static void createEditorUi(
             String startText, SyntaxHighlighter whiteMode, SyntaxHighlighter darkMode) {
