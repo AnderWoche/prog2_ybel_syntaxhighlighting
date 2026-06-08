@@ -7,12 +7,16 @@ import highlighting.core.SyntaxHighlighter;
 import highlighting.presets.Texts;
 import highlighting.regex.*;
 import highlighting.ui.EditorUI;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+
 import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Scanner;
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
@@ -22,22 +26,42 @@ import javax.swing.text.StyledDocument;
 public class Main {
 
     public static void main(String... args) {
+
+        MiniJavaLexer lexer = new MiniJavaLexer(CharStreams.fromString(Texts.START_TEXT));
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        MiniJavaParser parser = new MiniJavaParser(tokens);
+        MiniJavaParser.CompilationUnitContext tree = parser.compilationUnit();
+
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Leerzeichen pro Einrückstufe (z.B. 2, 4, 8): ");
+        int indent = sc.nextInt();
+        sc.close();
+
+        PrettyPrinterVisitor pp = new PrettyPrinterVisitor(indent);
+        pp.visit(tree);
+        System.out.println(pp.result());
+        System.exit(0);
+
+
         // Phase I: RegexHighlighter
-        SwingUtilities.invokeLater(
-                () ->
-                        createEditorUi(
-                                Texts.START_TEXT,
-                                new RegexHighlighter(new WhiteModeColorResolver()),
-                                new RegexHighlighter(new DarkModeColorResolver())));
+//        SwingUtilities.invokeLater(
+//                () ->
+//                        createEditorUi(
+//                                Texts.START_TEXT,
+//                                new RegexHighlighter(new WhiteModeColorResolver()),
+//                                new RegexHighlighter(new DarkModeColorResolver())));
 
         // Phase II: ScanningHighlighter
         SyntaxHighlighter scanning = new ScanningHighlighter();
 
         // Phase III: AntlrTokenCollector (tokenbasiert)
-        SyntaxHighlighter antlrToken = new AntlrTokenCollector();
+        SwingUtilities.invokeLater(
+            () ->
+                createEditorUi(
+                    Texts.START_TEXT,
+                    new AntlrTokenCollector(new WhiteModeColorResolver()),
+                    new AntlrTokenCollector(new DarkModeColorResolver())));
 
-        //    EditorUI.show(Texts.START_TEXT, scanning);
-        // EditorUI.show(Texts.START_TEXT, antlrToken);
     }
 
     /**

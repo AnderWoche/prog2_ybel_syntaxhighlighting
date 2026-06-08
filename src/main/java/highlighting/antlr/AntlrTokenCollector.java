@@ -1,12 +1,14 @@
 package highlighting.antlr;
 
+import highlighting.color.ColorResolver;
+import highlighting.color.ColorType;
+import highlighting.color.MiniJavaColours;
 import highlighting.core.HighlightRegion;
 import highlighting.core.SyntaxHighlighter;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.*;
-
-// TODO Phase III — AntlrTokenCollector (token-based syntax highlighting).
 
 // This highlighter uses the ANTLR-generated MiniJavaLexer to turn the input text into a token
 // stream. {@code collectMatches(String)} is the only method you need to implement: extract tokens
@@ -15,24 +17,64 @@ import org.antlr.v4.runtime.*;
 // the base class {@code SyntaxHighlighter} via the template method {@code computeRegions(...)}.
 public class AntlrTokenCollector extends SyntaxHighlighter {
 
-    // TODO (Phase III — implement this method): Use the token stream produced by the
-    // ANTLR-generated
-    // {@code MiniJavaLexer} to collect highlight regions.
-    //
-    // Requirements / hints:
-    // - Iterate over the lexer tokens (typically via {@code CommonTokenStream}); ignore the EOF
-    // token.
-    // - For each token type that should be coloured (e.g., keywords, string/char literals,
-    // comments),
-    // create a {@code HighlightRegion} with the corresponding colour from {@code MiniJavaColours}.
-    // - Use {@code Token#getStartIndex()} and {@code Token#getStopIndex()} (inclusive) to compute
-    // {@code [start, end)} ranges: {@code start = startIndex, end = stopIndex + 1}.
-    // - Do not sort, merge, or resolve overlaps here; return all candidates as you find them.
-    // Normalisation and conflict resolution are handled later by the template method.
-    // - Annotation highlighting: colour '@' and the immediately following IDENTIFIER token (if
-    // present).
+    private final ColorResolver colorResolver;
+
+    public AntlrTokenCollector(ColorResolver colorResolver) {
+        this.colorResolver = colorResolver;
+    }
+
     @Override
     public List<HighlightRegion> collectMatches(String text) {
-        throw new UnsupportedOperationException("not implemented yet");
+        ArrayList<HighlightRegion> result = new ArrayList<>();
+
+        MiniJavaLexer lexer = new MiniJavaLexer(CharStreams.fromString(text));
+
+        Token previous = null;
+        Token token = lexer.nextToken();
+
+        while(token.getType() != Token.EOF) {
+            ColorType colorType = ColorType.colorFor(token.getType());
+            if(colorType != null) {
+                result.add(new HighlightRegion(
+                    token.getStartIndex(),
+                    token.getStopIndex() + 1,
+                    colorResolver.resolveColor(colorType)
+                    ));
+            }
+
+            if (previous != null
+                && previous.getType() == MiniJavaLexer.AT
+                && token.getType() == MiniJavaLexer.IDENTIFIER) {
+                result.add(new HighlightRegion(
+                    token.getStartIndex(),
+                    token.getStopIndex() + 1,
+                    colorResolver.resolveColor(ColorType.ANNOTATION_COLOUR)));
+            }
+
+            previous = token;
+
+
+            token =  lexer.nextToken();
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<HighlightRegion> resolveConflicts(List<HighlightRegion> normalized) {
+        if (normalized.isEmpty()) return normalized;
+
+        List<HighlightRegion> result = new ArrayList<>();
+        for (int i = 0; i < normalized.size(); i++) {
+            HighlightRegion current = normalized.get(i);
+            if (i + 1 < normalized.size()) {
+                HighlightRegion next = normalized.get(i + 1);
+                if (next.start() == current.start() && next.end() == current.end()) {
+                    continue;
+                }
+            }
+            result.add(current);
+        }
+        return result;
     }
 }
